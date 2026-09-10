@@ -1,0 +1,7 @@
+bin/
+obj/
+Result/
+Dockerfile
+.dockerignore
+README.md
+*.lic

@@ -1,0 +1,25 @@
+# The "before" image: identical to Dockerfile except that the font layer is gone.
+# Build both and compare the [fonts] lines - this is the whole point of the sample.
+#
+#   docker build -t gd-sig-fonts-net:nofonts   -f Dockerfile.nofonts .
+#   docker build -t gd-sig-fonts-net:withfonts -f Dockerfile           .
+#   docker run --rm gd-sig-fonts-net:nofonts
+#   docker run --rm gd-sig-fonts-net:withfonts
+
+# ---- build ----
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY DockerFontsDemo.csproj ./
+RUN dotnet restore DockerFontsDemo.csproj
+
+COPY . ./
+RUN dotnet publish DockerFontsDemo.csproj -c Release -o /app --no-restore
+
+# ---- runtime, deliberately without any fonts ----
+FROM mcr.microsoft.com/dotnet/runtime:8.0
+
+WORKDIR /app
+COPY --from=build /app ./
+
+ENTRYPOINT ["dotnet", "DockerFontsDemo.dll"]

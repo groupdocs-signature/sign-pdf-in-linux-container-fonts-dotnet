@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Demo.DockerFonts</RootNamespace>
+    <AssemblyName>DockerFontsDemo</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Do NOT set InvariantGlobalization=true here. It is the usual advice for trimming the ICU
+         dependency out of a container image, but GroupDocs.Signature builds a CultureInfo("en-US")
+         inside SignatureSettings, so the first `new Signature(...)` throws:
+           System.Globalization.CultureNotFoundException: Only the invariant culture is supported
+           in globalization-invariant mode. en-US is an invalid culture identifier.
+         Keep globalization enabled and install ICU in the image instead (see the Dockerfile). -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GroupDocs.Signature" Version="26.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="documents\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
